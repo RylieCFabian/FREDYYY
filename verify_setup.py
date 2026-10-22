@@ -38,7 +38,17 @@ def check(label: str, fn):
 
 print("\n==> Python packages")
 check("python", lambda: sys.version.split()[0])
-check("torch + torchvision + Pillow", lambda: __import__("importlib").import_module("torch").__version__)
+
+
+def packages():
+    import PIL, torch, torchvision
+    return f"torch {torch.__version__}, torchvision {torchvision.__version__}, Pillow {PIL.__version__}"
+
+
+if not check("torch + torchvision + Pillow", packages):
+    # Everything below needs them, so stop here instead of crashing on the imports.
+    print(f"\n{RED}Packages are missing.{RESET} Re-run ./scripts/2_install.sh, or ask a mentor.")
+    sys.exit(1)
 import torch  # noqa: E402  (after the check, so a missing install gives a clean message)
 from torch.utils.data import DataLoader  # noqa: E402
 from torchvision import transforms  # noqa: E402

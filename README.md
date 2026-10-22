@@ -73,6 +73,7 @@ Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this comp
 - Register under real names
 - Do not share code with other competing teams
 - Maximum team size of 3 people
+- Any Python packages, libraries, or pretrained models are allowed; you are not limited to what the starter kit installs
 - Track 1 Specific: 200 submissions at most per team
 - Track 1 Specific: Do not hardcode/handwrite the submission data
 - Teams can enter multiple tracks, but may only win one prize
@@ -173,7 +174,7 @@ You can run `./setup.sh` to do all four, or run them one at a time to watch each
 |---|---|---|---|
 | 1 | `./scripts/1_check_system.sh` | seconds | A report on your machine |
 | 2 | `./scripts/2_install.sh` | 1-5 min | `.venv/` with PyTorch inside |
-| 3 | `./scripts/3_get_data.sh` | varies | `data/` with the three splits |
+| 3 | `./scripts/3_get_data.sh` | varies | `data/` with the train and test splits |
 | 4 | `./scripts/4_verify.sh` | about 1 min | A pass/fail report |
 
 ---
@@ -306,6 +307,8 @@ The packages are:
 | **Pillow** | Reads and writes image files | `dataset.py` opening each `frame_*.jpg` |
 | **gdown** | Downloads files from Google Drive | Step 3 only |
 
+These are just what the baseline needs. You can install anything else you like into the same environment: `.venv/bin/python -m pip install <package>` (or `uv pip install --python .venv/bin/python <package>`).
+
 ### Why a virtual environment?
 Python libraries are installed *somewhere*. If everything goes into one global place, projects fight over versions ("this one needs NumPy 1, that one needs NumPy 2") and nobody can reproduce anyone else's results. A virtual environment gives each project its own `site-packages` folder, so this project's packages never touch anything else on your laptop. Deleting `.venv/` undoes all of it. It is the standard first move in every Python project, and a habit worth keeping.
 
@@ -421,7 +424,9 @@ Re-run it. Downloads are the usual culprit and it picks up where it left off. To
 ```
 
 ### What it does
-Downloads `train.zip` and `test.zip` from the organizers' **Google Drive** folder, unpacks them into `data/train/` and `data/test/`, and checks the layout: both split folders exist, each contains sequences, each sequence has its frames, and `train/labels.csv` is present. A split that is already in `data/` is skipped, so it only downloads what is missing.
+Downloads `train.zip` and `test.zip` from the organizers' **Google Drive** folder, unpacks them into `data/train/` and `data/test/`, and checks the layout: both split folders exist, each contains sequences, each sequence has its frames, and `train/labels.csv` is present. A split that is already in `data/` is skipped, so it only downloads what is missing. Once a zip is unpacked it is deleted to save space.
+
+**If the data ends up broken** (an interrupted download, an odd zip), delete it and start over: `rm -rf data` and run the script again. Because a split already in `data/` is trusted as-is, re-running *without* deleting it will not repair it. The zips are gone by then, so it downloads them again.
 
 > **Organizers:** `GDRIVE_URL` at the top of `scripts/3_get_data.sh` points at the dataset's Drive folder, which must hold `train.zip` and `test.zip` and be shared as "Anyone with the link". Participants can override it with `GDRIVE_URL="..." ./scripts/3_get_data.sh`.
 
@@ -585,7 +590,7 @@ Runs `verify_setup.py`, which exercises each piece the competition relies on, in
 
 1. **Imports** PyTorch and reports its version.
 2. **Finds your training device** (CUDA, MPS or CPU).
-3. **Loads all three splits** through `dataset.py` and pulls one batch through a `DataLoader`.
+3. **Loads both splits** (train and test) through `dataset.py` and pulls one batch through a `DataLoader`.
 4. **Downloads the pretrained ResNet18 weights** (about 45 MB) and runs one forward pass.
 5. **Writes a dummy submission** ("no anomalies anywhere") and validates it with `check_submission.py`.
 
@@ -732,9 +737,8 @@ has_nvidia_gpu() { has nvidia-smi && nvidia-smi -L >/dev/null 2>&1; }
 | `No supported Python found` | Install Python 3.11 (python.org, or `brew install python@3.11`) |
 | Install is very slow or times out | Re-run step 2; it resumes. Try a different network |
 | `torch` fails to import | Delete `.venv/` and re-run step 2 |
-| Step 3: "No Google Drive link set" | Ask a mentor for the Drive link, then `GDRIVE_URL="..." ./scripts/3_get_data.sh` |
 | Step 3: download failed | Drive quota or sharing. Download `train.zip` and `test.zip` in your browser, save both in the starter kit folder (next to `setup.sh`), re-run step 3 |
-| `train/labels.csv is missing` | The data was unpacked into a nested folder; move its contents up so `train/` sits directly in `data/` |
+| `train/labels.csv is missing`, or any other step 3 layout error | Delete `data/` (`rm -rf data`) and re-run step 3. It downloads the zips again, since they are deleted after unpacking |
 | Training says `device: cpu` on a GPU machine | Linux/WSL2 only: check `nvidia-smi` works, delete `.venv/`, then `TORCH_FLAVOR=default ./scripts/2_install.sh` |
 | DataLoader crashes on macOS or Windows | Keep `num_workers=0` (the baseline's default) |
 | Out of memory while training | Lower `BATCH_SIZE`; each item is 10 images |

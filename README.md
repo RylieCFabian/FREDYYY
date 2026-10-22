@@ -72,7 +72,7 @@ Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this comp
 - One account per team
 - Register under real names
 - Do not share code with other competing teams
-- Any Python packages, libraries, or pretrained models are allowed; nothing is restricted to what the starter kit installs
+- Any Python packages and libraries are allowed
 - Maximum team size of 3 people
 - Track 1 Specific: 200 submissions at most per team
 - Track 1 Specific: Do not hardcode/handwrite the submission data

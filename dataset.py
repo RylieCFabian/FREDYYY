@@ -1,5 +1,5 @@
 """
-Dataset loader for the Fazzbear.ML competition.
+Dataset loader for the Five Nights with AI competition.
 
 On-disk layout (what ./scripts/3_get_data.sh puts in ``data/``):
 
@@ -13,7 +13,7 @@ On-disk layout (what ./scripts/3_get_data.sh puts in ``data/``):
 
 An item is one sequence of frames with **one label for the whole sequence**:
 1 if any frame in it is anomalous, else 0. The frames travel together because a
-frame is judged against its neighbours -- an animatronic that moved is obvious
+frame is judged against its neighbors -- an animatronic that moved is obvious
 next to the frames where it hadn't.
 
 Items come out as ``(clip, label)``, where ``clip`` is a float tensor of shape
@@ -176,7 +176,7 @@ def _to_tensor(image: Image.Image) -> torch.Tensor:
 
 
 class FazzbearSequenceDataset(Dataset):
-    """A split of the Fazzbear.ML dataset, one sequence of frames per item.
+    """A split of the Five Nights with AI dataset, one sequence of frames per item.
 
     Args:
         root: the split directory (``data/train`` or ``data/test``).

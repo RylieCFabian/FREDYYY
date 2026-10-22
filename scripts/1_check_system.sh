@@ -13,7 +13,7 @@ case "$OS" in
   wsl)     ok "Windows Subsystem for Linux" ;;
   windows) ok "Windows (Git Bash)"
            warn "WSL2 is smoother for ML work; Git Bash works but is CPU-only here." ;;
-  *)       fail "Unrecognised system '$(uname -s)'. Ask a mentor for help." ;;
+  *)       fail "Unrecognized system '$(uname -s)'. Ask a mentor for help." ;;
 esac
 
 step "Python"

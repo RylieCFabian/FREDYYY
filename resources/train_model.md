@@ -19,7 +19,7 @@ Edit `baseline.py` (or a copy of it) to build your own model. Leave `dataset.py`
 Each item is a **sequence of 10 frames**, and the label is 1 if *any* one of them
 is anomalous. That "any" is the whole design:
 
-- Don't train on loose frames. A sequence labelled 1 may contain four perfectly
+- Don't train on loose frames. A sequence labeled 1 may contain four perfectly
   normal frames, so a per-frame label would be wrong for most of its frames.
 - Instead, score each frame independently, then take the **max** across the frames.
   Max is the differentiable version of "any", which is exactly what the label

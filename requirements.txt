@@ -1,0 +1,8 @@
+# Everything dataset.py and the baseline in resources/train_model.md need,
+# and nothing else. Metrics are computed by hand, so no scikit-learn.
+# Don't install by hand: ./setup.sh does it (see README.md, "Setup guide").
+
+torch>=1.12        # frombuffer (1.10) for frame decoding, backends.mps (1.12)
+torchvision>=0.13  # the Weights enum API used to load pretrained ResNet18
+Pillow             # reading the frame_*.jpg/png files
+gdown>=5          # downloads the dataset zip from Google Drive (used by scripts/3_get_data.sh)

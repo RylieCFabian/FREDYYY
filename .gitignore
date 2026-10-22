@@ -1,0 +1,8 @@
+.venv/
+data/
+train.zip
+test.zip
+.gdrive_download/
+__pycache__/
+*.pt
+submission*.csv

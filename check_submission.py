@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import argparse
 import csv
-import io
 import os
 import re
 import sys
@@ -43,8 +42,10 @@ def check(raw: bytes, expected: set[str]) -> tuple[list[str], dict[str, bool]]:
     except UnicodeDecodeError:
         return ["file is not UTF-8 text - export it as plain CSV (UTF-8)"], {}
 
-    rows = list(csv.reader(io.StringIO(text)))
-    rows = [r for r in rows if any(cell.strip() for cell in r)]  # skip blank lines
+    lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
+    while lines and not lines[-1].strip():
+        lines.pop()
+    rows = list(csv.reader(lines))
     if not rows:
         return ["file is empty"], {}
 
@@ -55,6 +56,8 @@ def check(raw: bytes, expected: set[str]) -> tuple[list[str], dict[str, bool]]:
     seen: dict[str, int] = {}
     predictions: dict[str, bool] = {}
     for line, row in enumerate(rows[1:], start=2):
+        if not any(cell.strip() for cell in row):
+            continue
         if len(row) != 2:
             errors.append(f"row {line}: expected 2 columns, found {len(row)}")
             continue

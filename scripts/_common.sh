@@ -10,7 +10,7 @@ cd "$KIT_DIR"
 VENV_DIR="$KIT_DIR/.venv"
 DATA_DIR="${DATA_ROOT:-$KIT_DIR/data}"
 
-# Colours, only when printing to a real terminal.
+# Colors, only when printing to a real terminal.
 if [ -t 1 ]; then
   BOLD=$'\033[1m'; GREEN=$'\033[32m'; YELLOW=$'\033[33m'; RED=$'\033[31m'; DIM=$'\033[2m'; RESET=$'\033[0m'
 else

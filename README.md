@@ -24,7 +24,7 @@
   <img src="assets/sponsor-spacex-ai.png" alt="SpaceX AI" height="56">
 </p>
 
-Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this competition, you will train your models to predict anomalies from artificially made images from the videogame Five Nights at Freddies. Compete against your peers to win cool prizes!
+Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this competition, you will train your models to predict anomalies from artificially made images from the video game Five Nights at Freddy's. Compete against your peers to win cool prizes!
 
 > [!NOTE]
 > **This starter kit is for Track 1 (Highest Accuracy Model).** It sets up your environment, downloads the dataset, and gives you a working baseline that produces a leaderboard submission. Tracks 2–4 are judged separately and don't need this kit, though you're welcome to use it.
@@ -33,7 +33,7 @@ Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this comp
 | Time | Event | Location |
 |------|-------|----------|
 | 8:00 - 9:00 AM | Check-in | Jacobs Hall |
-| 9:00 - 9:30 AM | Opening Ceremony | Henry Bookers Room |
+| 9:00 - 9:30 AM | Opening Ceremony | Henry Booker Room |
 | 9:30 AM | Competition Starts | CSE Building |
 | 9:45 - 10:15 AM | Voiskey Workshop | CSE B250 |
 | 10:15 - 10:45 AM | Voiskey Tech Talk | CSE B250 |
@@ -43,7 +43,7 @@ Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this comp
 | 4:00 PM | Competition Ends |  |
 | 4:00 - 4:15 PM | Breaktime | CSE Basement |
 | 4:15 - 5:00 PM | Judging Begins | CSE B250 |
-| 5:30 PM | Closing Ceremony | Henry Bookers Room |
+| 5:30 PM | Closing Ceremony | Henry Booker Room |
 
 ## Table of Contents
 - [Tracks](#tracks)
@@ -227,7 +227,7 @@ case "$OS" in
   wsl)     ok "Windows Subsystem for Linux" ;;
   windows) ok "Windows (Git Bash)"
            warn "WSL2 is smoother for ML work; Git Bash works but is CPU-only here." ;;
-  *)       fail "Unrecognised system '$(uname -s)'. Ask a mentor for help." ;;
+  *)       fail "Unrecognized system '$(uname -s)'. Ask a mentor for help." ;;
 esac
 
 step "Python"
@@ -435,7 +435,7 @@ Downloads `train.zip` and `test.zip` from the organizers' **Google Drive** folde
 | `train/` | Yes (`labels.csv`) | Your textbook. Learn patterns from these. |
 | `test/` | No | The exam. You predict every sequence; the server secretly scores part of it publicly (the live leaderboard) and the rest privately (hidden until the end; it decides the ranking). |
 
-Splitting data this way is the core idea of machine learning evaluation: **a model must be judged on data it has never seen**, otherwise it can just memorise answers. The hidden private part goes one step further. If you tuned your model against the public leaderboard score until it was perfect, you may have overfit to those particular sequences, and the private score exposes that. A model that does well on both is one that actually learned the task.
+Splitting data this way is the core idea of machine learning evaluation: **a model must be judged on data it has never seen**, otherwise it can just memorize answers. The hidden private part goes one step further. If you tuned your model against the public leaderboard score until it was perfect, you may have overfit to those particular sequences, and the private score exposes that. A model that does well on both is one that actually learned the task.
 
 ### Why check the layout?
 A half-downloaded or mis-unpacked dataset produces confusing errors much later, like a crash forty minutes into training. Checking now turns that into a clear message at the start. The script also warns if `test/` contains a `labels.csv`, which would mean answers leaked.
@@ -495,6 +495,7 @@ unpack() {
   "$PYTHON" -m zipfile -e "$(archive "$split")" "$staging" \
     || die "$split.zip is corrupt or incomplete. Delete $(archive "$split") and try again."
   rm -rf "$staging/__MACOSX"
+  find "$staging" -name .DS_Store -delete  # one next to a wrapper folder blocks the hoist
   # Hoist single wrapper folders (e.g. train/ or dataset/train/) up to the sequences.
   while [ "$(find "$staging" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')" -eq 1 ] \
         && inner="$(find "$staging" -mindepth 1 -maxdepth 1 -type d)" && [ -n "$inner" ] \
@@ -552,6 +553,7 @@ for split in "${SPLITS[@]}"; do
   [ "$n" -gt 0 ] || die "$split/ has no sequence folders."
   first="$(find "$DATA_DIR/$split" -mindepth 1 -maxdepth 1 -type d | sort | head -n1)"
   frames=$(find "$first" -maxdepth 1 -name 'frame_*' | wc -l | tr -d ' ')
+  [ "$frames" -gt 0 ] || die "$split/ sequences have no frames. Delete $DATA_DIR/$split and run this script again."
   ok "$split: $n sequences, $frames frames each"
 done
 [ -f "$DATA_DIR/train/labels.csv" ] && ok "train/labels.csv found" || die "train/labels.csv is missing."
@@ -603,7 +605,7 @@ Steps 1-3 each succeed on their own, but that does not prove they work *together
 
 **Dataset and DataLoader.** PyTorch separates two jobs. A `Dataset` (see `dataset.py`) knows how to produce *one* item: `__len__` says how many there are and `__getitem__(i)` returns item `i`. A `DataLoader` wraps it and handles the rest: grouping items into batches, shuffling, and (optionally) loading in parallel. Networks train on batches because it is far more efficient than one example at a time.
 
-**Reading the shapes.** A batch printed as `clip (2, 10, 3, 256, 256)` means: 2 sequences, 10 frames each, 3 colour channels (red, green, blue), 256 x 256 pixels. Keeping the frames of a sequence together is deliberate. A frame is judged against its neighbours: an animatronic that moved is obvious next to the frames where it hadn't.
+**Reading the shapes.** A batch printed as `clip (2, 10, 3, 256, 256)` means: 2 sequences, 10 frames each, 3 color channels (red, green, blue), 256 x 256 pixels. Keeping the frames of a sequence together is deliberate. A frame is judged against its neighbors: an animatronic that moved is obvious next to the frames where it hadn't.
 
 **Pretrained models and transfer learning.** ResNet18 is a convolutional neural network already trained on ImageNet, a million-plus photos in 1000 categories. Its early layers learned general visual skills (edges, textures, shapes) that transfer to almost any image task. The baseline reuses that knowledge and only retrains the last layer for our yes/no question, which is far faster and more accurate than starting from random numbers. Weights are cached in `~/.cache/torch`, so the download happens once.
 
@@ -662,7 +664,7 @@ cd "$KIT_DIR"
 VENV_DIR="$KIT_DIR/.venv"
 DATA_DIR="${DATA_ROOT:-$KIT_DIR/data}"
 
-# Colours, only when printing to a real terminal.
+# Colors, only when printing to a real terminal.
 if [ -t 1 ]; then
   BOLD=$'\033[1m'; GREEN=$'\033[32m'; YELLOW=$'\033[33m'; RED=$'\033[31m'; DIM=$'\033[2m'; RESET=$'\033[0m'
 else
@@ -752,7 +754,7 @@ has_nvidia_gpu() { has nvidia-smi && nvidia-smi -L >/dev/null 2>&1; }
 | **Loss** | A number measuring how wrong the predictions are; training tries to shrink it |
 | **Pretrained model** | A network already trained on a big dataset, reused as a starting point |
 | **Transfer learning** | Adapting a pretrained model to a new task |
-| **Overfitting** | Memorising the training data instead of learning the pattern; shows up as a gap between train and test scores |
+| **Overfitting** | Memorizing the training data instead of learning the pattern; shows up as a gap between train and test scores |
 | **F1 score** | A single number balancing precision (few false alarms) and recall (few misses) |
 | **Virtual environment** | A project-private set of installed Python packages |
 | **Wheel** | A pre-built, installable Python package file |

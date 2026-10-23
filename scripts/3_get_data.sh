@@ -38,6 +38,7 @@ unpack() {
   "$PYTHON" -m zipfile -e "$(archive "$split")" "$staging" \
     || die "$split.zip is corrupt or incomplete. Delete $(archive "$split") and try again."
   rm -rf "$staging/__MACOSX"
+  find "$staging" -name .DS_Store -delete  # one next to a wrapper folder blocks the hoist
   # Hoist single wrapper folders (e.g. train/ or dataset/train/) up to the sequences.
   while [ "$(find "$staging" -mindepth 1 -maxdepth 1 | wc -l | tr -d ' ')" -eq 1 ] \
         && inner="$(find "$staging" -mindepth 1 -maxdepth 1 -type d)" && [ -n "$inner" ] \
@@ -95,6 +96,7 @@ for split in "${SPLITS[@]}"; do
   [ "$n" -gt 0 ] || die "$split/ has no sequence folders."
   first="$(find "$DATA_DIR/$split" -mindepth 1 -maxdepth 1 -type d | sort | head -n1)"
   frames=$(find "$first" -maxdepth 1 -name 'frame_*' | wc -l | tr -d ' ')
+  [ "$frames" -gt 0 ] || die "$split/ sequences have no frames. Delete $DATA_DIR/$split and run this script again."
   ok "$split: $n sequences, $frames frames each"
 done
 [ -f "$DATA_DIR/train/labels.csv" ] && ok "train/labels.csv found" || die "train/labels.csv is missing."

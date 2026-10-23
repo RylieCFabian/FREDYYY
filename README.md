@@ -33,6 +33,8 @@ Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this comp
   <img src="assets/voiskey-pro-qr.png" alt="QR code for 2 months of Voiskey Pro" width="200">
   <br>
   <b>Scan this QR code to access Voiskey Pro for 2 months.</b>
+  <br>
+  Can't scan it? Use this link instead: <a href="https://www.voiskey.ai/gift/PRODUCTSC">https://www.voiskey.ai/gift/PRODUCTSC</a>
 </p>
 
 ## Competition Timeline

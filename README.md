@@ -174,7 +174,7 @@ You can run `./setup.sh` to do all four, or run them one at a time to watch each
 |---|---|---|---|
 | 1 | `./scripts/1_check_system.sh` | seconds | A report on your machine |
 | 2 | `./scripts/2_install.sh` | 1-5 min | `.venv/` with PyTorch inside |
-| 3 | `./scripts/3_get_data.sh` | varies | `data/` with the three splits |
+| 3 | `./scripts/3_get_data.sh` | varies | `data/` with the train and test splits |
 | 4 | `./scripts/4_verify.sh` | about 1 min | A pass/fail report |
 
 ---
@@ -588,7 +588,7 @@ Runs `verify_setup.py`, which exercises each piece the competition relies on, in
 
 1. **Imports** PyTorch and reports its version.
 2. **Finds your training device** (CUDA, MPS or CPU).
-3. **Loads all three splits** through `dataset.py` and pulls one batch through a `DataLoader`.
+3. **Loads both splits** (train and test) through `dataset.py` and pulls one batch through a `DataLoader`.
 4. **Downloads the pretrained ResNet18 weights** (about 45 MB) and runs one forward pass.
 5. **Writes a dummy submission** ("no anomalies anywhere") and validates it with `check_submission.py`.
 

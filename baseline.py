@@ -3,6 +3,9 @@
     .venv/bin/python baseline.py        # Windows Git Bash: .venv/Scripts/python.exe baseline.py
 """
 
+import os
+from pathlib import Path
+
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader, Subset
@@ -11,8 +14,11 @@ from torchvision.models import resnet18, ResNet18_Weights
 
 from dataset import FazzbearSequenceDataset, write_submission
 
-TRAIN_ROOT = "data/train"
-TEST_ROOT = "data/test"
+HERE = Path(__file__).resolve().parent  # so it runs from any folder
+DATA_ROOT = Path(os.environ.get("DATA_ROOT", HERE / "data"))
+TRAIN_ROOT = DATA_ROOT / "train"
+TEST_ROOT = DATA_ROOT / "test"
+SUBMISSION = HERE / "submission.csv"
 EPOCHS = 3
 BATCH_SIZE = 8
 LR = 1e-4
@@ -129,5 +135,5 @@ with torch.no_grad():
     for clip, _ in test_loader:
         preds.extend((torch.sigmoid(model(clip.to(device))) >= THRESHOLD).cpu().tolist())
 
-write_submission("submission.csv", test_set.sequence_ids, preds)
-print(f"wrote submission.csv ({len(preds)} rows). Next: .venv/bin/python check_submission.py submission.csv")
+write_submission(SUBMISSION, test_set.sequence_ids, preds)
+print(f"wrote {SUBMISSION} ({len(preds)} rows). Next: .venv/bin/python check_submission.py submission.csv")

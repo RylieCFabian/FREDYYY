@@ -29,6 +29,12 @@ Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this comp
 > [!NOTE]
 > **This starter kit is for Track 1 (Highest Accuracy Model).** It sets up your environment, downloads the dataset, and gives you a working baseline that produces a leaderboard submission. Tracks 2–4 are judged separately and don't need this kit, though you're welcome to use it.
 
+<p align="center">
+  <img src="assets/voiskey-pro-qr.png" alt="QR code for 2 months of Voiskey Pro" width="200">
+  <br>
+  <b>Scan this QR code to access Voiskey Pro for 2 months.</b>
+</p>
+
 ## Competition Timeline
 | Time | Event | Location |
 |------|-------|----------|

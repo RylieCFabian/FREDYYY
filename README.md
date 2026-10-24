@@ -91,6 +91,8 @@ test_00002,FALSE
 
 Your score is **F1** on the anomalous class, so missing a real anomaly and raising a false alarm both cost you. Predicting "no anomaly" everywhere scores zero. Behind the scenes the server splits the test sequences into a **public** part and a **private** part, and you aren't told which is which. The public score drives the live leaderboard; the private score is hidden until the end and **decides the final ranking**.
 
+Only your team's **last valid submission** counts. The hidden private score determines the leaderboard ranking. Make sure your final upload is your best!
+
 ## Quick start
 
 1. **Get the starter kit** onto your laptop and open a terminal inside it:

@@ -65,3 +65,9 @@ Roughly in order of expected payoff:
 5. **Use the fixed cameras.** There are only 10 vantage points and the scene is
    static apart from the animatronics, so "what does this camera look like when
    nothing is wrong" is learnable structure the baseline ignores completely.
+
+## GPU Alternative
+
+[Google Colab](https://colab.research.google.com) offers free GPU notebooks: clone the starter kit, download the dataset into the notebook, and run `baseline.py` there. Free GPUs aren't guaranteed when Colab is busy, and an idle notebook eventually resets, which clears the downloaded data.
+
+If you are using Colab, please copy `train.zip` and `test.zip` into your own Google Drive once and load them from there after a reset. Everyone shares the competition link's download limit, so be careful with multiple downloads.

@@ -95,7 +95,7 @@ Only your team's **last valid submission** counts. The hidden private score dete
 
 **Time is part of the challenge.** This is a short competition, and training on every sequence at full resolution can take hours. The baseline trains on a slice of the data at reduced resolution so your first run is quick. Can you iterate on a model and strategy in a short amount of time? Keep track of the time!
 
-<small>**P.S.** If you like multi-tasking, you could work on other tracks while training!</small>
+<sup>**P.S.** If you like multi-tasking, you could work on other tracks while training!</sup>
 
 
 ## Quick start

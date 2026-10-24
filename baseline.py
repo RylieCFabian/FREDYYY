@@ -19,10 +19,12 @@ DATA_ROOT = Path(os.environ.get("DATA_ROOT", HERE / "data"))
 TRAIN_ROOT = DATA_ROOT / "train"
 TEST_ROOT = DATA_ROOT / "test"
 SUBMISSION = HERE / "submission.csv"
-EPOCHS = 3
+EPOCHS = 1
 BATCH_SIZE = 8
 LR = 1e-4
 VAL_FRACTION = 0.2
+IMAGE_SIZE = (128, 228)
+TRAIN_LIMIT = 2000 # training sequences per epoch. None trains on all 5,600
 THRESHOLD = 0.5
 NUM_WORKERS = 0  # raising it on macOS/Windows needs an `if __name__ == "__main__":` guard first
 
@@ -35,11 +37,12 @@ print(f"device: {device}")
 
 NORM = transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
 train_tf = transforms.Compose([
+    transforms.Resize(IMAGE_SIZE),
     transforms.ColorJitter(brightness=0.2, contrast=0.2),
     transforms.ToTensor(),
     NORM,
 ])
-eval_tf = transforms.Compose([transforms.ToTensor(), NORM])
+eval_tf = transforms.Compose([transforms.Resize(IMAGE_SIZE), transforms.ToTensor(), NORM])
 
 # Two views of the same directory so train and val get different augmentation.
 train_view = FazzbearSequenceDataset(TRAIN_ROOT, transform=train_tf)
@@ -49,7 +52,7 @@ print(train_view)
 order = torch.randperm(len(train_view), generator=torch.Generator().manual_seed(0)).tolist()
 n_val = int(VAL_FRACTION * len(order))
 val_set = Subset(eval_view, order[:n_val])
-train_set = Subset(train_view, order[n_val:])
+train_set = Subset(train_view, order[n_val:][:TRAIN_LIMIT])
 print(f"{len(train_set)} train / {len(val_set)} val sequences")
 
 train_loader = DataLoader(train_set, batch_size=BATCH_SIZE, shuffle=True, num_workers=NUM_WORKERS)

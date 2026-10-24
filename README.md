@@ -93,6 +93,8 @@ Your score is **F1** on the anomalous class, so missing a real anomaly and raisi
 
 Only your team's **last valid submission** counts. The hidden private score determines the leaderboard ranking. Make sure your final upload is your best!
 
+**Time is part of the challenge.** This is a short competition, and training on every sequence at full resolution can take hours. The baseline trains on a slice of the data at reduced resolution so your first run is quick. Can you iterate on a model and strategy in a short amount of time? Keep track of the time!
+
 ## Quick start
 
 1. **Get the starter kit** onto your laptop and open a terminal inside it:

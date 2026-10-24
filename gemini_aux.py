@@ -65,8 +65,11 @@ class WithIndex(Dataset):
         return clip, label, i
 
 
+DEFAULT_TARGETS = Path(__file__).resolve().parent / "gemini_data" / "gemini_frame_targets.json"
+
+
 class GeminiFrameTargets:
-    def __init__(self, path: str | Path = "gemini_frame_targets.json", frames: int = 10):
+    def __init__(self, path: str | Path = DEFAULT_TARGETS, frames: int = 10):
         path = Path(path)
         self.frames = frames
         self.table = json.loads(path.read_text()) if path.exists() else {}

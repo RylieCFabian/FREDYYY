@@ -38,9 +38,10 @@ def main(paths):
     print(f"ensemble of {len(paths)}: val f1 {f1:.4f} @ {thr:.2f} (p {prec:.3f} r {rec:.3f}, "
           f"{int((~((vp >= thr).float() == y)).sum())} val errors)")
     preds = (torch.stack(test_probs).mean(0) >= thr).tolist()
-    out = B.HERE / f"submission_ensemble_{time.strftime('%m%d_%H%M%S')}.csv"
+    out = B.HERE / "submissions" / f"submission_ensemble_{time.strftime('%m%d_%H%M%S')}.csv"
+    out.parent.mkdir(exist_ok=True)
     B.write_submission(out, test_set.sequence_ids, preds)
-    print(f"wrote {out.name} ({len(preds)} rows, {sum(preds)} positive). Next: python check_submission.py {out.name}")
+    print(f"wrote {out.name} ({len(preds)} rows, {sum(preds)} positive). Next: python check_submission.py submissions/{out.name}")
 
 
 if __name__ == "__main__":

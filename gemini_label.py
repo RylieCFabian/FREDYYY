@@ -18,10 +18,11 @@ from PIL import Image, ImageDraw, ImageFont
 from pydantic import BaseModel, Field
 
 FRAMES = 10
-LABELS_OUT = Path("gemini_labels.jsonl")
-TARGETS_OUT = Path("gemini_frame_targets.json")
-DEBUG_DIR = Path("gemini_debug")
-REFS_OUT = Path("camera_refs.npz")
+DATA_DIR = Path(__file__).resolve().parent / "gemini_data"
+LABELS_OUT = DATA_DIR / "gemini_labels.jsonl"
+TARGETS_OUT = DATA_DIR / "gemini_frame_targets.json"
+DEBUG_DIR = DATA_DIR / "gemini_debug"
+REFS_OUT = DATA_DIR / "camera_refs.npz"
 THUMB = (64, 36)
 MIN_CLUSTER = 20  # smaller clusters are probably odd states, not cameras
 CAM_THRESH = 12.0  # mean abs gray diff (0-255) to call two thumbnails the same camera, set by --cam-thresh

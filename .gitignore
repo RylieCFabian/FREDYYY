@@ -10,3 +10,5 @@ submission*.csv
 /test/
 .claude
 .gemini_key
+__MACOSX/
+CLAUDE.md

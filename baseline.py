@@ -47,7 +47,7 @@ if PREDICT_ONLY:
     CKPT = Path(os.environ["CKPT"])
 else:
     CKPT = HERE / "checkpoints" / f"baseline_v2_gemini{int(USE_GEMINI)}_{time.strftime('%m%d_%H%M%S')}.pt"
-SUBMISSION = HERE / f"submission_{CKPT.stem.removeprefix('baseline_')}.csv"
+SUBMISSION = HERE / "submissions" / f"submission_{CKPT.stem.removeprefix('baseline_')}.csv"
 
 device = ("cuda" if torch.cuda.is_available()
           else "mps" if torch.backends.mps.is_available()
@@ -193,9 +193,10 @@ def main():
     test_set = FazzbearSequenceDataset(TEST_ROOT, transform=eval_tf)
     probs, _ = predict(model, loader(test_set))  # never shuffle
     preds = (probs >= ck["threshold"]).tolist()
+    SUBMISSION.parent.mkdir(exist_ok=True)
     write_submission(SUBMISSION, test_set.sequence_ids, preds)
     print(f"wrote {SUBMISSION.name} ({len(preds)} rows, {sum(preds)} positive). "
-          f"Next: python check_submission.py {SUBMISSION.name}")
+          f"Next: python check_submission.py submissions/{SUBMISSION.name}")
 
 
 if __name__ == "__main__":

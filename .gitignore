@@ -6,3 +6,7 @@ test.zip
 __pycache__/
 *.pt
 submission*.csv
+/train/
+/test/
+.claude
+.gemini_key

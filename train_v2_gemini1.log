@@ -1,0 +1,70 @@
+C:\Users\aubreyasta\miniconda3\envs\fnaf_hackathon\Lib\site-packages\torch\optim\lr_scheduler.py:227: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+device: cuda  USE_GEMINI=True  EPOCHS=4  TRAIN_LIMIT=None  IMAGE_SIZE=(128, 228)  SEED=0
+5600 train / 1400 val sequences
+[gemini_aux] 238 sequences with Gemini frame labels
+epoch 1  step 50/700  loss 1.0949  0.65s/step
+epoch 1  step 100/700  loss 1.0097  0.40s/step
+epoch 1  step 150/700  loss 0.8717  0.34s/step
+epoch 1  step 200/700  loss 0.7546  0.32s/step
+epoch 1  step 250/700  loss 0.6699  0.31s/step
+epoch 1  step 300/700  loss 0.6006  0.30s/step
+epoch 1  step 350/700  loss 0.5472  0.30s/step
+epoch 1  step 400/700  loss 0.4918  0.29s/step
+epoch 1  step 450/700  loss 0.4482  0.29s/step
+epoch 1  step 500/700  loss 0.4132  0.28s/step
+epoch 1  step 550/700  loss 0.3825  0.28s/step
+epoch 1  step 600/700  loss 0.3586  0.28s/step
+epoch 1  step 650/700  loss 0.3358  0.28s/step
+epoch 1  step 700/700  loss 0.3154  0.28s/step
+epoch 1  241s  val@0.5 f1 0.9882 (p 0.993 r 0.983)  val@0.24 f1 0.9896 (p 0.990 r 0.989)
+  saved baseline_v2_gemini1.pt (epoch 1, threshold 0.24, val f1 0.9896)
+epoch 2  step 50/700  loss 0.0986  0.20s/step
+epoch 2  step 100/700  loss 0.0753  0.18s/step
+epoch 2  step 150/700  loss 0.0687  0.17s/step
+epoch 2  step 200/700  loss 0.0570  0.17s/step
+epoch 2  step 250/700  loss 0.0593  0.17s/step
+epoch 2  step 300/700  loss 0.0550  0.17s/step
+epoch 2  step 350/700  loss 0.0560  0.16s/step
+epoch 2  step 400/700  loss 0.0539  0.16s/step
+epoch 2  step 450/700  loss 0.0518  0.16s/step
+epoch 2  step 500/700  loss 0.0509  0.16s/step
+epoch 2  step 550/700  loss 0.0499  0.16s/step
+epoch 2  step 600/700  loss 0.0522  0.16s/step
+epoch 2  step 650/700  loss 0.0503  0.16s/step
+epoch 2  step 700/700  loss 0.0504  0.17s/step
+epoch 2  140s  val@0.5 f1 0.9923 (p 0.996 r 0.989)  val@0.48 f1 0.9930 (p 0.996 r 0.990)
+  saved baseline_v2_gemini1.pt (epoch 2, threshold 0.48, val f1 0.9930)
+epoch 3  step 50/700  loss 0.0186  0.20s/step
+epoch 3  step 100/700  loss 0.0240  0.18s/step
+epoch 3  step 150/700  loss 0.0324  0.17s/step
+epoch 3  step 200/700  loss 0.0320  0.17s/step
+epoch 3  step 250/700  loss 0.0303  0.18s/step
+epoch 3  step 300/700  loss 0.0287  0.18s/step
+epoch 3  step 350/700  loss 0.0288  0.18s/step
+epoch 3  step 400/700  loss 0.0314  0.18s/step
+epoch 3  step 450/700  loss 0.0310  0.18s/step
+epoch 3  step 500/700  loss 0.0302  0.18s/step
+epoch 3  step 550/700  loss 0.0310  0.18s/step
+epoch 3  step 600/700  loss 0.0307  0.18s/step
+epoch 3  step 650/700  loss 0.0308  0.18s/step
+epoch 3  step 700/700  loss 0.0298  0.19s/step
+epoch 3  152s  val@0.5 f1 0.9965 (p 0.997 r 0.996)  val@0.44 f1 0.9972 (p 0.997 r 0.997)
+  saved baseline_v2_gemini1.pt (epoch 3, threshold 0.44, val f1 0.9972)
+epoch 4  step 50/700  loss 0.0205  0.20s/step
+epoch 4  step 100/700  loss 0.0250  0.20s/step
+epoch 4  step 150/700  loss 0.0282  0.20s/step
+epoch 4  step 200/700  loss 0.0282  0.19s/step
+epoch 4  step 250/700  loss 0.0261  0.19s/step
+epoch 4  step 300/700  loss 0.0254  0.19s/step
+epoch 4  step 350/700  loss 0.0254  0.19s/step
+epoch 4  step 400/700  loss 0.0254  0.19s/step
+epoch 4  step 450/700  loss 0.0235  0.19s/step
+epoch 4  step 500/700  loss 0.0233  0.19s/step
+epoch 4  step 550/700  loss 0.0229  0.19s/step
+epoch 4  step 600/700  loss 0.0225  0.19s/step
+epoch 4  step 650/700  loss 0.0221  0.19s/step
+epoch 4  step 700/700  loss 0.0215  0.19s/step
+epoch 4  157s  val@0.5 f1 0.9965 (p 0.996 r 0.997)  val@0.50 f1 0.9965 (p 0.996 r 0.997)
+loaded baseline_v2_gemini1.pt: epoch 3, threshold 0.44, val f1 0.9972
+wrote submission_v2_gemini1.csv (8000 rows, 4003 positive). Next: python check_submission.py submission_v2_gemini1.csv

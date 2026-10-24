@@ -1,0 +1,44 @@
+device: cuda  USE_GEMINI=True  EPOCHS=2  TRAIN_LIMIT=None  IMAGE_SIZE=(128, 228)  SEED=0
+checkpoint: C:\Users\aubreyasta\Documents\Projects\Hackathons\Five-Nights-With-AI-Starter-Kit\checkpoints\baseline_v2_gemini1_full_1024_152849.pt
+7000 train / 1400 val sequences
+[gemini_aux] 238 sequences with Gemini frame labels
+C:\Users\aubreyasta\miniconda3\envs\fnaf_hackathon\Lib\site-packages\torch\optim\lr_scheduler.py:227: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+epoch 1  step 50/875  loss 1.0820  0.74s/step
+epoch 1  step 100/875  loss 0.9245  0.45s/step
+epoch 1  step 150/875  loss 0.7711  0.36s/step
+epoch 1  step 200/875  loss 0.6666  0.31s/step
+epoch 1  step 250/875  loss 0.5749  0.28s/step
+epoch 1  step 300/875  loss 0.5165  0.26s/step
+epoch 1  step 350/875  loss 0.4650  0.24s/step
+epoch 1  step 400/875  loss 0.4270  0.23s/step
+epoch 1  step 450/875  loss 0.3932  0.23s/step
+epoch 1  step 500/875  loss 0.3602  0.22s/step
+epoch 1  step 550/875  loss 0.3330  0.21s/step
+epoch 1  step 600/875  loss 0.3112  0.21s/step
+epoch 1  step 650/875  loss 0.2927  0.21s/step
+epoch 1  step 700/875  loss 0.2765  0.21s/step
+epoch 1  step 750/875  loss 0.2615  0.20s/step
+epoch 1  step 800/875  loss 0.2485  0.20s/step
+epoch 1  step 850/875  loss 0.2373  0.20s/step
+epoch 1  174s  saved baseline_v2_gemini1_full_1024_152849.pt (full data, no val)
+epoch 2  step 50/875  loss 0.0581  0.20s/step
+epoch 2  step 100/875  loss 0.0545  0.19s/step
+epoch 2  step 150/875  loss 0.0481  0.19s/step
+epoch 2  step 200/875  loss 0.0416  0.20s/step
+epoch 2  step 250/875  loss 0.0381  0.20s/step
+epoch 2  step 300/875  loss 0.0362  0.20s/step
+epoch 2  step 350/875  loss 0.0396  0.21s/step
+epoch 2  step 400/875  loss 0.0382  0.21s/step
+epoch 2  step 450/875  loss 0.0396  0.21s/step
+epoch 2  step 500/875  loss 0.0407  0.21s/step
+epoch 2  step 550/875  loss 0.0393  0.21s/step
+epoch 2  step 600/875  loss 0.0378  0.21s/step
+epoch 2  step 650/875  loss 0.0370  0.21s/step
+epoch 2  step 700/875  loss 0.0366  0.21s/step
+epoch 2  step 750/875  loss 0.0373  0.21s/step
+epoch 2  step 800/875  loss 0.0365  0.21s/step
+epoch 2  step 850/875  loss 0.0350  0.21s/step
+epoch 2  180s  saved baseline_v2_gemini1_full_1024_152849.pt (full data, no val)
+loaded baseline_v2_gemini1_full_1024_152849.pt: epoch 2, threshold 0.50, val f1 nan
+wrote submission_v2_gemini1_full_1024_152849.csv (8000 rows, 3987 positive). Next: python check_submission.py submissions/submission_v2_gemini1_full_1024_152849.csv

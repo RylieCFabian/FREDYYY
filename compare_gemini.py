@@ -66,11 +66,15 @@ def verdict(r):
 
 def val_predictions(ckpt_path):
     ck = torch.load(ckpt_path, map_location=B.device)
+    if "model" not in ck:  # old baseline_gemini.py checkpoints: bare state dict, no saved threshold
+        ck = {"model": ck, "threshold": None, "epoch": "last"}
     model = B.SequenceClassifier().to(B.device)
     model.load_state_dict(ck["model"])
     view = FazzbearSequenceDataset(B.TRAIN_ROOT, transform=B.eval_tf)
     order = torch.randperm(len(view), generator=torch.Generator().manual_seed(0)).tolist()
     probs, y = B.predict(model, B.loader(Subset(view, order[:int(B.VAL_FRACTION * len(order))])))
+    if ck["threshold"] is None:
+        ck["threshold"] = B.sweep(probs, y)[0]
     return (probs >= ck["threshold"]).int().tolist(), y.int().tolist(), ck
 
 

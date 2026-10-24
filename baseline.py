@@ -15,10 +15,13 @@ import os
 import time
 from pathlib import Path
 
+import numpy as np
 import torch
 import torch.nn as nn
+import torch.nn.functional as F
 from torch.utils.data import DataLoader, Subset
 from torchvision import transforms
+from torchvision.transforms import functional as TF
 from torchvision.models import resnet18, ResNet18_Weights
 
 from dataset import FazzbearSequenceDataset, write_submission
@@ -36,9 +39,12 @@ IMAGE_SIZE = tuple(int(x) for x in os.environ.get("IMAGE_SIZE", "128,228").split
 TRAIN_LIMIT = int(os.environ.get("TRAIN_LIMIT", "0")) or None  # 0 = all training sequences
 NUM_WORKERS = int(os.environ.get("NUM_WORKERS", "6"))
 USE_GEMINI = os.environ.get("USE_GEMINI", "1") == "1"
+USE_DIFF = os.environ.get("USE_DIFF", "0") == "1"  # 4th input channel: |frame - camera ref|
 LAMBDA = 0.5
 SEED = int(os.environ.get("SEED", "0"))  # init/shuffle/augmentation only, the val split is always seed 0
 MAX_STEPS = int(os.environ.get("MAX_STEPS", "0"))  # >0: stop each epoch early, for timing runs
+FULL_DATA = os.environ.get("FULL_DATA") == "1"
+FULL_THRESHOLD = 0.5  # within 1 val clip of the swept best in every 5600-clip run
 
 # Every training run gets its own timestamped checkpoint, so no run overwrites another.
 # PREDICT_ONLY needs CKPT=path/to/checkpoint.pt.
@@ -46,7 +52,7 @@ PREDICT_ONLY = os.environ.get("PREDICT_ONLY") == "1"
 if PREDICT_ONLY:
     CKPT = Path(os.environ["CKPT"])
 else:
-    CKPT = HERE / "checkpoints" / f"baseline_v2_gemini{int(USE_GEMINI)}_{time.strftime('%m%d_%H%M%S')}.pt"
+    CKPT = HERE / "checkpoints" / f"baseline_v2_gemini{int(USE_GEMINI)}{'_diff' if USE_DIFF else ''}{'_full' if FULL_DATA else ''}_{time.strftime('%m%d_%H%M%S')}.pt"
 SUBMISSION = HERE / "submissions" / f"submission_{CKPT.stem.removeprefix('baseline_')}.csv"
 
 device = ("cuda" if torch.cuda.is_available()
@@ -64,6 +70,33 @@ train_tf = transforms.Compose([
 eval_tf = transforms.Compose([transforms.Resize(IMAGE_SIZE), transforms.ToTensor(), NORM])
 
 
+class AddDiff:
+    """Resize, then append |frame - nearest camera ref| (the refs Gemini's grids use) as a 4th channel.
+    The diff is taken before color jitter so augmentation doesn't fake a scene change."""
+
+    def __init__(self, jitter=None):
+        z = np.load(HERE / "gemini_data" / "camera_refs.npz")
+        self.thumbs = torch.from_numpy(z["thumbs"])  # (K, 36, 64) gray 0-255, as in gemini_label._thumb
+        refs = torch.from_numpy(z["refs"]).permute(0, 3, 1, 2).float() / 255
+        self.refs = F.interpolate(refs, size=IMAGE_SIZE, mode="bilinear", antialias=True).mean(1)
+        self.resize, self.jitter = transforms.Resize(IMAGE_SIZE), jitter
+
+    def __call__(self, img):
+        img = self.resize(img.convert("RGB"))
+        thumb = torch.from_numpy(np.asarray(img.convert("L").resize((64, 36)), dtype=np.float32))
+        # Always the nearest camera: an off-camera frame then lights up the whole diff, the "no ref" hint.
+        k = (self.thumbs - thumb).abs().mean((1, 2)).argmin()
+        diff = (TF.to_tensor(img).mean(0) - self.refs[k]).abs() * 4  # roughly unit scale
+        if self.jitter:
+            img = self.jitter(img)
+        return torch.cat([NORM(TF.to_tensor(img)), diff[None]])
+
+
+if USE_DIFF:
+    train_tf = AddDiff(transforms.ColorJitter(brightness=0.2, contrast=0.2))
+    eval_tf = AddDiff()
+
+
 class SequenceClassifier(nn.Module):
     """Score each frame with a pretrained CNN, then max-pool over the sequence."""
 
@@ -71,6 +104,11 @@ class SequenceClassifier(nn.Module):
         super().__init__()
         self.backbone = resnet18(weights=ResNet18_Weights.DEFAULT)
         self.backbone.fc = nn.Linear(self.backbone.fc.in_features, 1)
+        if USE_DIFF:  # pretrained RGB filters kept, diff channel starts as their mean
+            old = self.backbone.conv1
+            self.backbone.conv1 = nn.Conv2d(4, 64, 7, 2, 3, bias=False)
+            with torch.no_grad():
+                self.backbone.conv1.weight.copy_(torch.cat([old.weight, old.weight.mean(1, keepdim=True)], 1))
 
     def forward(self, clip):                      # clip: (B, T, C, H, W)
         b, t = clip.shape[:2]
@@ -120,7 +158,8 @@ def train(model, train_view, eval_view):
     order = torch.randperm(len(train_view), generator=torch.Generator().manual_seed(0)).tolist()
     n_val = int(VAL_FRACTION * len(order))
     val_set = Subset(eval_view, order[:n_val])
-    train_set = Subset(WithIndex(train_view), order[n_val:][:TRAIN_LIMIT])
+    # FULL_DATA=1: final run on train + val with the recipe picked on val. No val score, fixed threshold.
+    train_set = Subset(WithIndex(train_view), order if FULL_DATA else order[n_val:][:TRAIN_LIMIT])
     print(f"{len(train_set)} train / {len(val_set)} val sequences")
     gem = GeminiFrameTargets()
     train_loader, val_loader = loader(train_set, shuffle=True), loader(val_set)
@@ -157,6 +196,12 @@ def train(model, train_view, eval_view):
             if step == MAX_STEPS:
                 break
 
+        if FULL_DATA:
+            torch.save({"model": model.state_dict(), "threshold": FULL_THRESHOLD, "epoch": epoch,
+                        "val_f1": float("nan")}, CKPT.with_suffix(".tmp"))
+            os.replace(CKPT.with_suffix(".tmp"), CKPT)
+            print(f"epoch {epoch}  {time.time() - t0:.0f}s  saved {CKPT.name} (full data, no val)", flush=True)
+            continue
         probs, targets = predict(model, val_loader)
         acc, prec, rec, f1 = binary_metrics(probs, targets, 0.5)
         thr, acc_b, prec_b, rec_b, f1_b = sweep(probs, targets)
@@ -172,7 +217,7 @@ def train(model, train_view, eval_view):
 
 
 def main():
-    print(f"device: {device}  USE_GEMINI={USE_GEMINI}  EPOCHS={EPOCHS}  TRAIN_LIMIT={TRAIN_LIMIT}  "
+    print(f"device: {device}  USE_GEMINI={USE_GEMINI}  USE_DIFF={USE_DIFF}  EPOCHS={EPOCHS}  TRAIN_LIMIT={TRAIN_LIMIT}  "
           f"IMAGE_SIZE={IMAGE_SIZE}  SEED={SEED}")
     torch.manual_seed(SEED)
     torch.backends.cudnn.benchmark = True

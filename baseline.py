@@ -24,7 +24,7 @@ BATCH_SIZE = 8
 LR = 1e-4
 VAL_FRACTION = 0.2
 IMAGE_SIZE = (128, 228)
-TRAIN_LIMIT = 2000 # training sequences per epoch. None trains on all 5,600
+TRAIN_LIMIT = 1000 # training sequences per epoch. None trains on all 5,600
 THRESHOLD = 0.5
 NUM_WORKERS = 0  # raising it on macOS/Windows needs an `if __name__ == "__main__":` guard first
 

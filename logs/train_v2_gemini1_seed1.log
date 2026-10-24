@@ -1,0 +1,71 @@
+C:\Users\aubreyasta\miniconda3\envs\fnaf_hackathon\Lib\site-packages\torch\optim\lr_scheduler.py:227: UserWarning: Detected call of `lr_scheduler.step()` before `optimizer.step()`. In PyTorch 1.1.0 and later, you should call them in the opposite order: `optimizer.step()` before `lr_scheduler.step()`.  Failure to do this will result in PyTorch skipping the first value of the learning rate schedule. See more details at https://pytorch.org/docs/stable/optim.html#how-to-adjust-learning-rate
+  warnings.warn(
+device: cuda  USE_GEMINI=True  EPOCHS=4  TRAIN_LIMIT=None  IMAGE_SIZE=(128, 228)  SEED=1
+checkpoint: C:\Users\aubreyasta\Documents\Projects\Hackathons\Five-Nights-With-AI-Starter-Kit\checkpoints\baseline_v2_gemini1_1024_143204.pt
+5600 train / 1400 val sequences
+[gemini_aux] 238 sequences with Gemini frame labels
+epoch 1  step 50/700  loss 1.3866  0.89s/step
+epoch 1  step 100/700  loss 1.2821  0.54s/step
+epoch 1  step 150/700  loss 1.0944  0.42s/step
+epoch 1  step 200/700  loss 0.9357  0.36s/step
+epoch 1  step 250/700  loss 0.8026  0.32s/step
+epoch 1  step 300/700  loss 0.7111  0.30s/step
+epoch 1  step 350/700  loss 0.6264  0.28s/step
+epoch 1  step 400/700  loss 0.5724  0.27s/step
+epoch 1  step 450/700  loss 0.5195  0.26s/step
+epoch 1  step 500/700  loss 0.4764  0.25s/step
+epoch 1  step 550/700  loss 0.4445  0.24s/step
+epoch 1  step 600/700  loss 0.4149  0.23s/step
+epoch 1  step 650/700  loss 0.3902  0.23s/step
+epoch 1  step 700/700  loss 0.3680  0.22s/step
+epoch 1  209s  val@0.5 f1 0.9853 (p 0.997 r 0.974)  val@0.08 f1 0.9903 (p 0.993 r 0.988)
+  saved baseline_v2_gemini1_1024_143204.pt (epoch 1, threshold 0.08, val f1 0.9903)
+epoch 2  step 50/700  loss 0.0550  0.18s/step
+epoch 2  step 100/700  loss 0.0587  0.17s/step
+epoch 2  step 150/700  loss 0.0487  0.17s/step
+epoch 2  step 200/700  loss 0.0529  0.17s/step
+epoch 2  step 250/700  loss 0.0486  0.18s/step
+epoch 2  step 300/700  loss 0.0480  0.18s/step
+epoch 2  step 350/700  loss 0.0503  0.17s/step
+epoch 2  step 400/700  loss 0.0556  0.17s/step
+epoch 2  step 450/700  loss 0.0592  0.17s/step
+epoch 2  step 500/700  loss 0.0586  0.18s/step
+epoch 2  step 550/700  loss 0.0575  0.18s/step
+epoch 2  step 600/700  loss 0.0562  0.18s/step
+epoch 2  step 650/700  loss 0.0540  0.18s/step
+epoch 2  step 700/700  loss 0.0528  0.18s/step
+epoch 2  153s  val@0.5 f1 0.9924 (p 0.993 r 0.992)  val@0.61 f1 0.9930 (p 0.996 r 0.990)
+  saved baseline_v2_gemini1_1024_143204.pt (epoch 2, threshold 0.61, val f1 0.9930)
+epoch 3  step 50/700  loss 0.0319  0.23s/step
+epoch 3  step 100/700  loss 0.0435  0.21s/step
+epoch 3  step 150/700  loss 0.0359  0.21s/step
+epoch 3  step 200/700  loss 0.0325  0.21s/step
+epoch 3  step 250/700  loss 0.0295  0.21s/step
+epoch 3  step 300/700  loss 0.0275  0.21s/step
+epoch 3  step 350/700  loss 0.0271  0.21s/step
+epoch 3  step 400/700  loss 0.0264  0.21s/step
+epoch 3  step 450/700  loss 0.0274  0.20s/step
+epoch 3  step 500/700  loss 0.0275  0.20s/step
+epoch 3  step 550/700  loss 0.0267  0.20s/step
+epoch 3  step 600/700  loss 0.0275  0.20s/step
+epoch 3  step 650/700  loss 0.0297  0.20s/step
+epoch 3  step 700/700  loss 0.0290  0.20s/step
+epoch 3  168s  val@0.5 f1 0.9951 (p 0.994 r 0.996)  val@0.17 f1 0.9958 (p 0.994 r 0.997)
+  saved baseline_v2_gemini1_1024_143204.pt (epoch 3, threshold 0.17, val f1 0.9958)
+epoch 4  step 50/700  loss 0.0133  0.24s/step
+epoch 4  step 100/700  loss 0.0191  0.23s/step
+epoch 4  step 150/700  loss 0.0187  0.22s/step
+epoch 4  step 200/700  loss 0.0208  0.22s/step
+epoch 4  step 250/700  loss 0.0235  0.23s/step
+epoch 4  step 300/700  loss 0.0219  0.23s/step
+epoch 4  step 350/700  loss 0.0227  0.24s/step
+epoch 4  step 400/700  loss 0.0219  0.24s/step
+epoch 4  step 450/700  loss 0.0213  0.25s/step
+epoch 4  step 500/700  loss 0.0208  0.25s/step
+epoch 4  step 550/700  loss 0.0213  0.25s/step
+epoch 4  step 600/700  loss 0.0211  0.25s/step
+epoch 4  step 650/700  loss 0.0209  0.26s/step
+epoch 4  step 700/700  loss 0.0206  0.26s/step
+epoch 4  218s  val@0.5 f1 0.9958 (p 0.994 r 0.997)  val@0.50 f1 0.9958 (p 0.994 r 0.997)
+loaded baseline_v2_gemini1_1024_143204.pt: epoch 3, threshold 0.17, val f1 0.9958
+wrote submission_v2_gemini1_1024_143204.csv (8000 rows, 4030 positive). Next: python check_submission.py submission_v2_gemini1_1024_143204.csv

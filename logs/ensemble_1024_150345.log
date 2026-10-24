@@ -1,0 +1,5 @@
+python ensemble.py checkpoints/baseline_v2_gemini1_1024_140938.pt checkpoints/baseline_v2_gemini1_1024_143204.pt
+checkpoints/baseline_v2_gemini1_1024_140938.pt: val f1 0.9972 @ 0.44
+checkpoints/baseline_v2_gemini1_1024_143204.pt: val f1 0.9958 @ 0.17
+ensemble of 2: val f1 0.9965 @ 0.51 (p 0.996 r 0.997, 5 val errors)
+wrote submission_ensemble_1024_150345.csv (8000 rows, 3999 positive)

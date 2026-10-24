@@ -94,7 +94,7 @@ splits_present || die "Expected train/ and test/ inside $DATA_DIR."
 for split in "${SPLITS[@]}"; do
   n=$(find "$DATA_DIR/$split" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')
   [ "$n" -gt 0 ] || die "$split/ has no sequence folders."
-  first="$(find "$DATA_DIR/$split" -mindepth 1 -maxdepth 1 -type d | sort | head -n1)"
+  first="$(find "$DATA_DIR/$split" -mindepth 1 -maxdepth 1 -type d | sort | sed -n 1p)"
   frames=$(find "$first" -maxdepth 1 -name 'frame_*' | wc -l | tr -d ' ')
   [ "$frames" -gt 0 ] || die "$split/ sequences have no frames. Delete $DATA_DIR/$split and run this script again."
   ok "$split: $n sequences, $frames frames each"

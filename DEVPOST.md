@@ -45,7 +45,12 @@ Same split for every row: seed-0, 5600 train / 1400 val. F1 on the anomaly class
 | Ours, `USE_GEMINI=1`, seed 0 | 5600 | 4 (best: 3) | **0.9972** |
 | Ours, `USE_GEMINI=1`, seed 1 | 5600 | 4 (best: 3) | 0.9958 |
 | Ensemble of both seeds | 5600 | | 0.9965 |
+| Ours, `USE_GEMINI=1 USE_DIFF=1`, seed 0 | 5600 | 3 (best: 2) | 0.9965 |
 | Ours, `USE_GEMINI=0`, seed 0 | 5600 | 4 | *(teammate run, fill in)* |
+
+Public leaderboard F1: **0.99558**.
+
+`USE_DIFF=1` reuses the labeler's camera references in the CNN. It appends |frame - nearest camera ref| as a 4th input channel. A frame that matches no camera produces a bright diff everywhere, the same "no ref" hint the labeler gets. In 3 epochs it matched the two-seed ensemble but did not beat the best single seed.
 
 Other changes on top of the baseline: all training data, mixed precision, a OneCycle LR schedule, 6 data-loader workers, a 0.01 to 0.99 threshold sweep, and a best-val checkpoint saved every epoch.
 
@@ -81,7 +86,7 @@ The frame labels help most when data is scarce. With only 1000 clips, the max-po
 ## What's next
 - Run both arms over 3 seeds and report the paired test.
 - Label all 3500 positives once API quota allows.
-- Feed the camera reference diff to the CNN as an extra input channel.
+- Train the camera-diff channel (`USE_DIFF=1`) for the full 6 epochs over several seeds.
 
 ## Built with
 Python, PyTorch, torchvision (ResNet18), Google Gemini API (`google-genai`, structured output with Pydantic), NumPy, Pillow.

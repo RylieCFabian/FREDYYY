@@ -24,6 +24,43 @@
   <img src="assets/sponsor-spacex-ai.png" alt="SpaceX AI" height="56">
 </p>
 
+## FREDYYY: our entry
+
+A vision LLM tells the CNN which frame is anomalous. Gemini labels frames in training clips. Those labels become a second, per-frame loss next to the sequence loss. Test inference runs the CNN only, with no LLM call. Full write-up: [`DEVPOST.md`](DEVPOST.md).
+
+**Results.** Public leaderboard F1 0.99558. Best val F1 0.9972 (ResNet18, all 5600 train clips, `USE_GEMINI=1`, seed 0).
+
+### Run it
+Run every command from the repo root in an environment with `requirements.txt` installed. Set `GEMINI_API_KEY` before you run any labeling step.
+
+```bash
+python gemini_label.py --build-refs        # per-camera median "normal" views -> gemini_data/camera_refs.npz
+python gemini_label.py --validate 20       # go/no-go check on labeled train clips, saves grids
+python gemini_label.py --label 400         # label positive train clips -> gemini_data/gemini_labels.jsonl
+python gemini_label.py --to-targets        # soft frame targets -> gemini_data/gemini_frame_targets.json
+USE_GEMINI=1 python baseline.py            # train with the Gemini frame loss, write a submission
+USE_GEMINI=0 python baseline.py            # matched run without it
+python compare_gemini.py --no-gemini <ckpt0> --gemini <ckpt1>   # paired val test
+python ensemble.py <ckpt> <ckpt> ...       # average checkpoints, threshold on val
+```
+
+`baseline.py` reads these environment variables:
+
+| Variable | Default | Effect |
+|---|---|---|
+| `USE_GEMINI` | `1` | Add the Gemini per-frame loss (`LAMBDA = 0.5`) |
+| `USE_DIFF` | `0` | Add \|frame - nearest camera ref\| as a 4th input channel |
+| `SEED` | `0` | Init, shuffle and augmentation seed. The val split always uses seed 0 |
+| `EPOCHS` | `6` | Training epochs |
+| `IMAGE_SIZE` | `128,228` | Frame size, `H,W` |
+| `TRAIN_LIMIT` | `0` | Cap on train clips. `0` uses all |
+| `FULL_DATA` | unset | `1` trains on train + val with a fixed 0.5 threshold |
+| `PREDICT_ONLY` | unset | `1` writes a submission from `CKPT=<path>` without training |
+
+Every training run writes a timestamped checkpoint to `checkpoints/`, a submission to `submissions/`, and never overwrites an earlier run. Training logs are in `logs/`.
+
+---
+
 Welcome to ACM AI's Fall 2026 Competition, **Five Nights with AI**! In this competition, you will train your models to predict anomalies from artificially made images from the video game Five Nights at Freddy's. Compete against your peers to win cool prizes!
 
 > [!NOTE]
@@ -132,7 +169,13 @@ Five-Nights-With-AI-Starter-Kit/
 ├── setup.sh               runs the four setup steps in order
 ├── scripts/               the setup steps, one script each (+ a shared helper)
 ├── requirements.txt       the Python packages we install
-├── baseline.py            the baseline model: train, validate, write submission.csv (edit this!)
+├── baseline.py            ResNet18 per frame, max over frames, Gemini frame loss, optional diff channel
+├── gemini_label.py        camera refs, grid rendering, Gemini labeling, frame targets
+├── gemini_aux.py          WithIndex, GeminiFrameTargets, aux_frame_loss
+├── compare_gemini.py      paired val test: USE_GEMINI=0 vs 1 checkpoint
+├── ensemble.py            averages checkpoints, picks the threshold on val
+├── gemini_data/           camera refs, Gemini labels, frame targets, debug grids
+├── logs/                  training and ensemble logs
 ├── dataset.py             loads the data into PyTorch (read this one!)
 ├── check_submission.py    checks your CSV before you upload it
 ├── verify_setup.py        the end-to-end test that step 4 runs
